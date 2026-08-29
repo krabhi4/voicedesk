@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ConversationProvider, useConversation } from '@elevenlabs/react'
+import type { Day, Slot } from '@/lib/slots'
 
-type SlotView = { id: string; time: string; label: string; booked: boolean }
-type DayView = { date: string; weekday: string; monthDay: string; slots: SlotView[] }
+type SlotView = Slot & { booked: boolean }
+type DayView = Omit<Day, 'slots'> & { slots: SlotView[] }
 type Appt = {
   code: string
   slotId: string
@@ -28,12 +29,7 @@ const AGENT_ID = process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID ?? ''
 let seq = 0
 
 function now() {
-  return new Date().toLocaleTimeString('en-US', {
-    hour12: false,
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  })
+  return new Date().toTimeString().slice(0, 8)
 }
 
 export function Desk() {

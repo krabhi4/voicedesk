@@ -19,9 +19,10 @@ function pad(n: number) {
 }
 
 function timeLabel(hour: number, minute: number) {
-  const h12 = hour % 12 === 0 ? 12 : hour % 12
-  const ampm = hour < 12 ? 'AM' : 'PM'
-  return `${h12}:${pad(minute)} ${ampm}`
+  return new Date(2000, 0, 1, hour, minute).toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+  })
 }
 
 export function buildWeek(now = new Date()): Day[] {

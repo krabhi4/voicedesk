@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
-import { isValidSlot, newCode, slotLabel } from '@/lib/slots'
+import { buildWeek, isValidSlot, newCode, slotLabel } from '@/lib/slots'
 
 export const dynamic = 'force-dynamic'
 
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE() {
   await prisma.appointment.deleteMany()
-  const week = await import('@/lib/slots').then((m) => m.buildWeek())
+  const week = buildWeek()
   const samples = [
     { day: 1, index: 4, patientName: 'Meera Nair', reason: 'Follow-up consultation' },
     { day: 2, index: 9, patientName: 'Daniel Okafor', reason: 'Annual check-up' },
