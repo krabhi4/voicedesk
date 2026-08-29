@@ -20,7 +20,7 @@ const vt323 = VT323({
 })
 
 export const metadata: Metadata = {
-  title: 'VoiceDesk — an AI front desk that answers, books, and logs itself',
+  title: 'VoiceDesk: an AI front desk that answers, books, and logs itself',
   description:
     'Live demo: talk to an AI receptionist that checks a real calendar, books appointments into Postgres, and prints every tool call on a receipt as it happens. Built by Kumar Abhishek.',
 }

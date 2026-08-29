@@ -117,9 +117,9 @@ function DeskInner() {
           }
           if (pool.length === 0)
             return 'No open slots match. The clinic is open Mon-Sat, 9 AM to 5 PM.'
-          return `Open slots (slot_id — time): ${pool
+          return `Open slots (slot_id: time): ${pool
             .slice(0, 12)
-            .map((s) => `${s.id} — ${s.label}`)
+            .map((s) => `${s.id}: ${s.label}`)
             .join('; ')}${pool.length > 12 ? ` (+${pool.length - 12} more)` : ''}`
         }),
       book_appointment: async (params: {
@@ -354,7 +354,7 @@ function DeskInner() {
             <div className="flex items-baseline justify-between border-b-2 border-ink pb-2">
               <h2 className="font-mono text-lg font-bold">WEEK PLANNER</h2>
               <span className="font-mono text-xs text-ink-soft">
-                Mon–Sat · 9:00–17:00 · {appointments.length} booked
+                Mon-Sat · 9:00-17:00 · {appointments.length} booked
               </span>
             </div>
             <div className="mt-3 overflow-x-auto">
@@ -368,7 +368,7 @@ function DeskInner() {
                     <div className="max-h-[360px] overflow-y-auto pt-1">
                       {day.slots.length === 0 ? (
                         <div className="pt-2 text-center font-mono text-[10px] text-ink-faint">
-                          — done —
+                          until tomorrow
                         </div>
                       ) : (
                         day.slots.map((slot) => {
@@ -452,7 +452,7 @@ function DeskInner() {
           >
             Kumar Abhishek
           </a>{' '}
-          — Next.js, ElevenLabs Agents, Prisma, Postgres.
+          with Next.js, ElevenLabs Agents, Prisma, and Postgres.
         </span>
         <span>Demo data resets freely. No real clinic was harmed.</span>
       </footer>

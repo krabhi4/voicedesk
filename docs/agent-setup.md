@@ -43,28 +43,28 @@ Add four **Client tools** (Agent → Tools → Add tool → Client). Enable **"W
 
 - Description: `Returns open appointment slots for the next 7 days as a list of slot_id and human-readable time. Optionally filter by a day.`
 - Parameters:
-  - `day` — string, optional. Description: `Filter, e.g. "2026-09-01", "Tue" or "tomorrow morning" keywords like a weekday or date.`
+  - `day`: string, optional. Description: `Filter, e.g. "2026-09-01", "Tue" or "tomorrow morning" keywords like a weekday or date.`
 
 ### book_appointment
 
 - Description: `Books an appointment. Returns the confirmation code.`
 - Parameters:
-  - `slot_id` — string, required. Description: `Exact slot_id from check_availability, e.g. "2026-09-01|10:30".`
-  - `patient_name` — string, required. Description: `Caller's full name.`
-  - `reason` — string, required. Description: `Reason for the visit.`
-  - `phone` — string, optional. Description: `Callback phone number.`
+  - `slot_id`: string, required. Description: `Exact slot_id from check_availability, e.g. "2026-09-01|10:30".`
+  - `patient_name`: string, required. Description: `Caller's full name.`
+  - `reason`: string, required. Description: `Reason for the visit.`
+  - `phone`: string, optional. Description: `Callback phone number.`
 
 ### lookup_appointment
 
 - Description: `Looks up an existing appointment by confirmation code.`
 - Parameters:
-  - `confirmation_code` — string, required. Description: `Code like VD-1234.`
+  - `confirmation_code`: string, required. Description: `Code like VD-1234.`
 
 ### cancel_appointment
 
 - Description: `Cancels an appointment by confirmation code and frees the slot.`
 - Parameters:
-  - `confirmation_code` — string, required. Description: `Code like VD-1234.`
+  - `confirmation_code`: string, required. Description: `Code like VD-1234.`
 
 ## 5. Try it
 

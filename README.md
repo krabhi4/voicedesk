@@ -1,18 +1,16 @@
 # VoiceDesk
 
-**A front desk that answers, books, and logs itself.**
+An AI phone receptionist you can test in the browser. You press the call button, talk to it, and it books, reschedules, or cancels appointments in a Postgres database while a paper-style receipt on screen prints every tool call it makes.
 
-Live demo of a production-pattern AI voice receptionist: you talk to it in the browser, it checks a real calendar, writes real rows to Postgres, and every tool call it makes appears in an on-screen operations ledger the moment it fires.
-
-Built to demonstrate the architecture behind real voice-AI deployments: agent + typed tools + database + observable side effects.
+I built it because voice agents are easy to fake in a video and hard to fake live. Here the calendar is real, the bookings survive a page refresh, and if the agent claims a slot is free you can see the `check_availability` call that told it so.
 
 ## How it works
 
-- **Voice agent**: ElevenLabs Conversational AI over WebRTC (`@elevenlabs/react`). The agent holds the conversation; the browser supplies four client tools.
-- **Client tools** (`check_availability`, `book_appointment`, `lookup_appointment`, `cancel_appointment`) run in the browser, call the Next.js API, stream their results into the ledger UI, and return compact strings the agent can speak from.
-- **API**: Next.js route handlers with validation, slot conflict handling (unique constraint, 409 on double-booking), and confirmation codes.
-- **Data**: Prisma 7 + PostgreSQL. Slots are computed (Mon-Sat, 9:00-17:00, 30 min); bookings are rows.
-- **Fail-honest by design**: the agent is instructed to never invent availability or codes; every claim it makes on the call maps to a tool result you can see in the ledger.
+The voice side is an ElevenLabs conversational agent connected over WebRTC through `@elevenlabs/react`. The agent has no backend access of its own. It gets four client tools that run in the browser: `check_availability`, `book_appointment`, `lookup_appointment`, and `cancel_appointment`. Each tool calls a Next.js route handler, writes its result onto the on-screen receipt, and returns a short string the agent reads back to the caller.
+
+The API enforces what the model cannot be trusted to: a unique constraint on the slot column returns 409 when two callers race for the same time, booking requires an exact slot id that came from an availability check, and cancellation requires the confirmation code the caller was given. Slots are computed, not stored: Monday to Saturday, 9:00 to 17:00, 30 minutes each. Bookings are Prisma rows.
+
+The agent's prompt forbids inventing availability, codes, or contact details. Since every claim it can make routes through a tool, the receipt doubles as an audit log of the whole call.
 
 ## Run it
 
@@ -23,14 +21,14 @@ pnpm prisma migrate dev
 pnpm dev
 ```
 
-Then create the ElevenLabs agent (ten minutes): see [docs/agent-setup.md](docs/agent-setup.md) for the exact system prompt and tool definitions.
+Creating the ElevenLabs agent takes about ten minutes. The exact system prompt and all four tool definitions are in [docs/agent-setup.md](docs/agent-setup.md).
 
-`DELETE /api/appointments` (the "Reset demo" button) clears the calendar and seeds three sample bookings.
+The "Reset demo" button (`DELETE /api/appointments`) wipes the calendar and seeds three sample bookings.
 
 ## Stack
 
-Next.js 16 · TypeScript · Tailwind 4 · ElevenLabs Agents · Prisma 7 · PostgreSQL
+Next.js 16, TypeScript, Tailwind 4, ElevenLabs Agents, Prisma 7, PostgreSQL.
 
 ## Author
 
-Kumar Abhishek — full-stack + AI voice agents & automation.
+Kumar Abhishek. I build voice agents, LLM pipelines, and the boring API plumbing that makes them trustworthy. [github.com/krabhi4](https://github.com/krabhi4)
