@@ -50,6 +50,7 @@ function DeskInner() {
   const [ledger, setLedger] = useState<LedgerEntry[]>([])
   const [lines, setLines] = useState<Line[]>([])
   const [busy, setBusy] = useState(false)
+  const [callError, setCallError] = useState<string | null>(null)
   const transcriptRef = useRef<HTMLDivElement>(null)
 
   const refresh = useCallback(async () => {
@@ -175,10 +176,19 @@ function DeskInner() {
   const startCall = useCallback(async () => {
     if (!AGENT_ID) return
     setBusy(true)
+    setCallError(null)
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true })
       await conversation.startSession({ agentId: AGENT_ID })
       setLines([])
+    } catch (err) {
+      setCallError(
+        err instanceof DOMException && err.name === 'NotAllowedError'
+          ? 'Microphone access was denied. Allow the mic and try again.'
+          : err instanceof Error
+            ? err.message
+            : 'Could not start the call.',
+      )
     } finally {
       setBusy(false)
     }
@@ -271,6 +281,9 @@ function DeskInner() {
                     “I’d like an appointment tomorrow morning.”
                   </span>
                 </p>
+                {callError && (
+                  <p className="text-center text-xs leading-relaxed text-vermilion">{callError}</p>
+                )}
               </>
             ) : (
               <div className="space-y-3 text-sm leading-relaxed text-ink-soft">
