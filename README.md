@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VoiceDesk
 
-## Getting Started
+**A front desk that answers, books, and logs itself.**
 
-First, run the development server:
+Live demo of a production-pattern AI voice receptionist: you talk to it in the browser, it checks a real calendar, writes real rows to Postgres, and every tool call it makes appears in an on-screen operations ledger the moment it fires.
+
+Built to demonstrate the architecture behind real voice-AI deployments: agent + typed tools + database + observable side effects.
+
+## How it works
+
+- **Voice agent**: ElevenLabs Conversational AI over WebRTC (`@elevenlabs/react`). The agent holds the conversation; the browser supplies four client tools.
+- **Client tools** (`check_availability`, `book_appointment`, `lookup_appointment`, `cancel_appointment`) run in the browser, call the Next.js API, stream their results into the ledger UI, and return compact strings the agent can speak from.
+- **API**: Next.js route handlers with validation, slot conflict handling (unique constraint, 409 on double-booking), and confirmation codes.
+- **Data**: Prisma 7 + PostgreSQL. Slots are computed (Mon-Sat, 9:00-17:00, 30 min); bookings are rows.
+- **Fail-honest by design**: the agent is instructed to never invent availability or codes; every claim it makes on the call maps to a tool result you can see in the ledger.
+
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+cp .env.example .env   # set DATABASE_URL and NEXT_PUBLIC_ELEVENLABS_AGENT_ID
+pnpm prisma migrate dev
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then create the ElevenLabs agent (ten minutes): see [docs/agent-setup.md](docs/agent-setup.md) for the exact system prompt and tool definitions.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+`DELETE /api/appointments` (the "Reset demo" button) clears the calendar and seeds three sample bookings.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Stack
 
-## Learn More
+Next.js 16 · TypeScript · Tailwind 4 · ElevenLabs Agents · Prisma 7 · PostgreSQL
 
-To learn more about Next.js, take a look at the following resources:
+## Author
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Kumar Abhishek — full-stack + AI voice agents & automation.

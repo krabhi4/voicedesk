@@ -1,0 +1,18 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Appointment {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  slotId      String   @unique
+  patientName String
+  phone       String?
+  reason      String
+  createdAt   DateTime @default(now())
+}
