@@ -1,83 +1,233 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-paper: oklch(0.974 0.008 84);
-  --color-paper-deep: oklch(0.948 0.011 82);
-  --color-ink: oklch(0.268 0.018 55);
-  --color-ink-soft: oklch(0.455 0.017 58);
-  --color-ink-faint: oklch(0.635 0.014 62);
-  --color-line: oklch(0.878 0.013 80);
-  --color-vermilion: oklch(0.605 0.19 34);
-  --color-vermilion-deep: oklch(0.525 0.175 33);
-  --color-moss: oklch(0.535 0.098 152);
-  --color-moss-wash: oklch(0.935 0.03 152);
-  --color-cream: oklch(0.99 0.005 88);
+  --color-desk: oklch(0.87 0.012 85);
+  --color-shell: oklch(0.915 0.01 88);
+  --color-shell-deep: oklch(0.845 0.012 86);
+  --color-shell-edge: oklch(0.74 0.014 84);
+  --color-ink: oklch(0.24 0.012 70);
+  --color-ink-soft: oklch(0.44 0.012 70);
+  --color-ink-faint: oklch(0.58 0.01 72);
+  --color-lcd: oklch(0.185 0.03 150);
+  --color-lcd-glow: oklch(0.82 0.21 148);
+  --color-lcd-dim: oklch(0.45 0.08 148);
+  --color-paper: oklch(0.985 0.006 95);
+  --color-rule: oklch(0.9 0.012 90);
+  --color-led-green: oklch(0.78 0.21 148);
+  --color-led-amber: oklch(0.8 0.16 75);
+  --color-led-red: oklch(0.62 0.22 28);
+  --color-stamp-blue: oklch(0.45 0.13 258);
+  --color-stamp-red: oklch(0.5 0.19 25);
 
-  --font-display: var(--font-fraunces);
-  --font-sans: var(--font-spline);
-  --font-mono: var(--font-spline-mono);
-
-  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --font-sans: var(--font-chivo);
+  --font-mono: var(--font-courier);
+  --font-lcd: var(--font-vt323);
 }
 
 body {
-  background: var(--color-paper);
+  background:
+    radial-gradient(ellipse 120% 90% at 50% -20%, oklch(0.91 0.012 88), transparent),
+    var(--color-desk);
   color: var(--color-ink);
   font-family: var(--font-sans);
 }
 
 ::selection {
-  background: var(--color-vermilion);
-  color: var(--color-cream);
+  background: var(--color-ink);
+  color: var(--color-paper);
 }
 
-@keyframes ledger-in {
+.font-lcd {
+  font-family: var(--font-lcd);
+}
+
+.device {
+  background: linear-gradient(180deg, var(--color-shell) 0%, var(--color-shell-deep) 100%);
+  border: 1px solid var(--color-shell-edge);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1.5px 0 oklch(1 0 0 / 0.75),
+    inset 0 -2px 3px oklch(0 0 0 / 0.06),
+    0 14px 30px -12px oklch(0 0 0 / 0.35),
+    0 3px 6px oklch(0 0 0 / 0.12);
+}
+
+.device-inset {
+  background: linear-gradient(180deg, var(--color-shell-deep), var(--color-shell));
+  border-radius: 8px;
+  box-shadow:
+    inset 0 2px 4px oklch(0 0 0 / 0.14),
+    inset 0 -1px 0 oklch(1 0 0 / 0.6);
+}
+
+.screw {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, oklch(0.88 0.008 85), oklch(0.62 0.012 82));
+  box-shadow: inset 0 -1px 1px oklch(0 0 0 / 0.35);
+  position: relative;
+}
+.screw::after {
+  content: '';
+  position: absolute;
+  left: 15%;
+  right: 15%;
+  top: 46%;
+  height: 1.5px;
+  background: oklch(0.42 0.01 80 / 0.8);
+  transform: rotate(-35deg);
+}
+
+.grille {
+  background-image: radial-gradient(circle, oklch(0 0 0 / 0.28) 1.3px, transparent 1.5px);
+  background-size: 9px 9px;
+}
+
+.lcd {
+  background: var(--color-lcd);
+  border-radius: 6px;
+  box-shadow:
+    inset 0 3px 8px oklch(0 0 0 / 0.55),
+    inset 0 0 0 1px oklch(0 0 0 / 0.4);
+  position: relative;
+  overflow: hidden;
+}
+.lcd::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, oklch(0 0 0 / 0.16) 0 1px, transparent 1px 3px);
+  pointer-events: none;
+}
+.lcd-text {
+  color: var(--color-lcd-glow);
+  text-shadow: 0 0 6px oklch(0.82 0.21 148 / 0.55);
+}
+.lcd-dim {
+  color: var(--color-lcd-dim);
+  text-shadow: none;
+}
+
+.led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: inset 0 1px 1px oklch(0 0 0 / 0.4);
+}
+.led-on-green {
+  background: var(--color-led-green);
+  box-shadow: 0 0 7px 1px oklch(0.78 0.21 148 / 0.7);
+}
+.led-on-amber {
+  background: var(--color-led-amber);
+  box-shadow: 0 0 7px 1px oklch(0.8 0.16 75 / 0.7);
+}
+.led-on-red {
+  background: var(--color-led-red);
+  box-shadow: 0 0 7px 1px oklch(0.62 0.22 28 / 0.7);
+}
+.led-off {
+  background: oklch(0.6 0.01 80);
+}
+
+.push-button {
+  border-radius: 50%;
+  border: 1px solid oklch(0.5 0.16 28);
+  background: radial-gradient(circle at 50% 32%, oklch(0.68 0.2 28), oklch(0.53 0.2 27) 68%);
+  box-shadow:
+    inset 0 2px 2px oklch(1 0 0 / 0.35),
+    inset 0 -4px 6px oklch(0 0 0 / 0.3),
+    0 5px 0 oklch(0.4 0.15 27),
+    0 8px 12px oklch(0 0 0 / 0.3);
+  color: oklch(0.97 0.01 40);
+  text-shadow: 0 -1px 0 oklch(0 0 0 / 0.3);
+  transition: transform 0.06s ease, box-shadow 0.06s ease;
+}
+.push-button:active:not(:disabled),
+.push-button.is-down {
+  transform: translateY(4px);
+  box-shadow:
+    inset 0 2px 3px oklch(0 0 0 / 0.35),
+    0 1px 0 oklch(0.4 0.15 27),
+    0 2px 4px oklch(0 0 0 / 0.25);
+}
+.push-button:disabled {
+  filter: saturate(0.4) brightness(0.95);
+}
+
+.paper {
+  background:
+    repeating-linear-gradient(0deg, transparent 0 27px, var(--color-rule) 27px 28px),
+    var(--color-paper);
+  box-shadow:
+    0 2px 4px oklch(0 0 0 / 0.1),
+    0 10px 22px -12px oklch(0 0 0 / 0.28);
+}
+
+.receipt {
+  background: var(--color-paper);
+  box-shadow:
+    0 2px 4px oklch(0 0 0 / 0.12),
+    0 12px 20px -12px oklch(0 0 0 / 0.3);
+  --notch: 9px;
+  clip-path: polygon(
+    0 0, 100% 0, 100% calc(100% - var(--notch)),
+    97.5% 100%, 95% calc(100% - var(--notch)), 92.5% 100%, 90% calc(100% - var(--notch)),
+    87.5% 100%, 85% calc(100% - var(--notch)), 82.5% 100%, 80% calc(100% - var(--notch)),
+    77.5% 100%, 75% calc(100% - var(--notch)), 72.5% 100%, 70% calc(100% - var(--notch)),
+    67.5% 100%, 65% calc(100% - var(--notch)), 62.5% 100%, 60% calc(100% - var(--notch)),
+    57.5% 100%, 55% calc(100% - var(--notch)), 52.5% 100%, 50% calc(100% - var(--notch)),
+    47.5% 100%, 45% calc(100% - var(--notch)), 42.5% 100%, 40% calc(100% - var(--notch)),
+    37.5% 100%, 35% calc(100% - var(--notch)), 32.5% 100%, 30% calc(100% - var(--notch)),
+    27.5% 100%, 25% calc(100% - var(--notch)), 22.5% 100%, 20% calc(100% - var(--notch)),
+    17.5% 100%, 15% calc(100% - var(--notch)), 12.5% 100%, 10% calc(100% - var(--notch)),
+    7.5% 100%, 5% calc(100% - var(--notch)), 2.5% 100%, 0 calc(100% - var(--notch))
+  );
+}
+
+.stamp {
+  display: inline-block;
+  border: 1.5px solid currentColor;
+  border-radius: 3px;
+  padding: 0 4px;
+  transform: rotate(-2deg);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+@keyframes print-line {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(-6px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
-
-@keyframes breath {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 oklch(0.605 0.19 34 / 0.35);
-  }
-  50% {
-    box-shadow: 0 0 0 18px oklch(0.605 0.19 34 / 0);
-  }
+.print-line {
+  animation: print-line 0.35s ease-out both;
 }
 
-@keyframes pip {
-  0%,
-  100% {
-    opacity: 0.35;
-  }
-  50% {
-    opacity: 1;
-  }
+@keyframes blink {
+  0%, 55% { opacity: 1; }
+  56%, 100% { opacity: 0; }
+}
+.blink {
+  animation: blink 1.1s steps(1) infinite;
 }
 
-.ledger-in {
-  animation: ledger-in 0.5s var(--ease-out-quint) both;
+@keyframes led-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
 }
-
-.call-live {
-  animation: breath 2.2s ease-in-out infinite;
-}
-
-.pip {
-  animation: pip 1.4s ease-in-out infinite;
+.led-pulse {
+  animation: led-pulse 1.3s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ledger-in,
-  .call-live,
-  .pip {
+  .print-line, .blink, .led-pulse {
     animation: none;
   }
 }

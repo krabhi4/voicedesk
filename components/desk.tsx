@@ -110,10 +110,13 @@ function DeskInner() {
           )
           if (params.day) {
             const needle = params.day.toLowerCase()
-            const scoped = pool.filter((s) => s.label.toLowerCase().includes(needle) || s.id.startsWith(params.day ?? ''))
+            const scoped = pool.filter(
+              (s) => s.label.toLowerCase().includes(needle) || s.id.startsWith(params.day ?? ''),
+            )
             if (scoped.length > 0) pool = scoped
           }
-          if (pool.length === 0) return 'No open slots match. The clinic is open Mon-Sat, 9 AM to 5 PM.'
+          if (pool.length === 0)
+            return 'No open slots match. The clinic is open Mon-Sat, 9 AM to 5 PM.'
           return `Open slots (slot_id — time): ${pool
             .slice(0, 12)
             .map((s) => `${s.id} — ${s.label}`)
@@ -143,7 +146,9 @@ function DeskInner() {
         }),
       lookup_appointment: async (params: { confirmation_code: string }) =>
         record('lookup_appointment', params, async () => {
-          const res = await fetch(`/api/appointments/${encodeURIComponent(params.confirmation_code)}`)
+          const res = await fetch(
+            `/api/appointments/${encodeURIComponent(params.confirmation_code)}`,
+          )
           const data = await res.json()
           if (!res.ok) throw new Error(data.error ?? 'Lookup failed.')
           const a = data.appointment
@@ -205,145 +210,165 @@ function DeskInner() {
     refresh()
   }, [refresh])
 
+  const lcdStatus = !AGENT_ID
+    ? 'NO AGENT CONFIGURED'
+    : status === 'connecting'
+      ? 'DIALING…'
+      : live
+        ? isSpeaking
+          ? 'LINE 1 · DESK SPEAKING'
+          : 'LINE 1 · LISTENING'
+        : 'ON HOOK · READY'
+
   return (
-    <main className="mx-auto w-full max-w-6xl px-5 pb-24">
-      <header className="flex items-baseline justify-between border-b border-line pt-8 pb-5">
-        <div className="flex items-baseline gap-4">
-          <span className="font-display text-2xl font-semibold tracking-tight">VoiceDesk</span>
-          <span className="hidden text-xs uppercase tracking-[0.18em] text-vermilion sm:inline">
-            Live demo
-          </span>
+    <main className="mx-auto w-full max-w-6xl px-5 pb-20">
+      <header className="flex items-center justify-between pt-6 pb-8">
+        <div className="device inline-flex items-center gap-3 px-4 py-2">
+          <span className="screw" />
+          <span className="text-sm font-bold tracking-[0.22em]">VOICEDESK</span>
+          <span className="screw" />
         </div>
         <nav className="flex items-center gap-5 text-sm text-ink-soft">
-          <button onClick={resetDemo} className="underline-offset-4 hover:text-ink hover:underline">
+          <button onClick={resetDemo} className="hover:text-ink hover:underline underline-offset-4">
             Reset demo
           </button>
           <a
             href="https://github.com/krabhi4/voicedesk"
             target="_blank"
             rel="noreferrer"
-            className="underline-offset-4 hover:text-ink hover:underline"
+            className="hover:text-ink hover:underline underline-offset-4"
           >
             Source
           </a>
         </nav>
       </header>
 
-      <section className="grid gap-x-12 gap-y-6 pt-10 pb-14 lg:grid-cols-[7fr_5fr]">
-        <h1 className="font-display text-[clamp(2.1rem,5vw,3.4rem)] leading-[1.05] font-medium">
-          A front desk that answers,
-          <br />
-          books, and <em className="text-vermilion not-italic">logs itself</em>.
+      <section className="max-w-2xl pb-10">
+        <h1 className="text-3xl font-bold leading-tight sm:text-4xl">
+          An AI receptionist you can pick up and talk to.
         </h1>
-        <p className="max-w-md self-end text-[15px] leading-relaxed text-ink-soft">
-          Call the AI receptionist below. It checks a real calendar, writes real rows to Postgres,
-          and every tool it uses appears in the ledger the moment it fires. Try booking, then ask
-          it to cancel using your confirmation code.
+        <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">
+          Press the red button and ask for an appointment. The agent checks the planner, writes
+          real rows to Postgres, and every tool it uses prints on the receipt. Built by Kumar
+          Abhishek.
         </p>
       </section>
 
-      <div className="grid items-start gap-10 lg:grid-cols-[360px_1fr]">
-        <section className="border border-line bg-paper-deep lg:sticky lg:top-6">
-          <div className="flex items-center justify-between border-b border-line px-5 py-3">
-            <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-ink-faint">
-              Reception line
-            </span>
-            <span className="flex items-center gap-2 text-[11px] uppercase tracking-[0.14em]">
-              <span
-                className={`inline-block size-2 rounded-full ${
-                  live ? (isSpeaking ? 'bg-vermilion pip' : 'bg-moss pip') : 'bg-line'
-                }`}
-              />
-              <span className="text-ink-soft">
-                {live ? (isSpeaking ? 'Speaking' : 'Listening') : 'On hook'}
+      <div className="grid items-start gap-10 lg:grid-cols-[400px_1fr]">
+        <section className="device p-5 lg:sticky lg:top-6">
+          <div className="flex items-center justify-between pb-4">
+            <div className="flex items-center gap-2">
+              <span className="screw" />
+              <span className="text-[11px] font-bold tracking-[0.18em] text-ink-soft">
+                RECEPTION CONSOLE
               </span>
-            </span>
+            </div>
+            <span className="screw" />
           </div>
 
-          <div className="flex flex-col items-center gap-5 px-6 py-10">
+          <div className="lcd px-4 py-3">
+            <div className="font-lcd lcd-text text-xl leading-none">
+              {lcdStatus}
+              <span className="blink">_</span>
+            </div>
+            <div className="font-lcd lcd-dim mt-1 text-sm leading-none">
+              CEDAR LANE CLINIC · MON-SAT 09-17
+            </div>
+          </div>
+
+          <div className="mt-4 flex items-center justify-between px-1">
+            <div className="flex items-center gap-4">
+              {[
+                { label: 'PWR', cls: 'led-on-green' },
+                {
+                  label: 'MIC',
+                  cls: live && !isSpeaking ? 'led-on-amber led-pulse' : 'led-off',
+                },
+                { label: 'SPK', cls: live && isSpeaking ? 'led-on-red led-pulse' : 'led-off' },
+              ].map((led) => (
+                <div key={led.label} className="flex items-center gap-1.5">
+                  <span className={`led ${led.cls}`} />
+                  <span className="text-[10px] font-bold text-ink-faint">{led.label}</span>
+                </div>
+              ))}
+            </div>
+            <div className="grille h-8 w-24 rounded-sm opacity-70" />
+          </div>
+
+          <div className="mt-6 flex flex-col items-center gap-4 pb-2">
             {AGENT_ID ? (
               <>
                 <button
                   onClick={live ? endCall : startCall}
                   disabled={busy || status === 'connecting'}
-                  className={`flex size-28 items-center justify-center rounded-full text-sm font-semibold tracking-wide transition-colors duration-300 disabled:opacity-60 ${
-                    live
-                      ? 'call-live bg-vermilion text-cream hover:bg-vermilion-deep'
-                      : 'bg-ink text-cream hover:bg-vermilion'
-                  }`}
+                  className={`push-button flex size-24 items-center justify-center text-[13px] font-bold ${live ? 'is-down' : ''}`}
                 >
-                  {status === 'connecting' ? 'Ringing…' : live ? 'End call' : 'Call'}
+                  {status === 'connecting' ? '···' : live ? 'HANG UP' : 'CALL'}
                 </button>
                 <p className="text-center text-xs leading-relaxed text-ink-faint">
-                  Uses your microphone. Say something like
+                  Uses your microphone. Try “I’d like an
                   <br />
-                  <span className="text-ink-soft">
-                    “I’d like an appointment tomorrow morning.”
-                  </span>
+                  appointment tomorrow morning.”
                 </p>
                 {callError && (
-                  <p className="text-center text-xs leading-relaxed text-vermilion">{callError}</p>
+                  <p className="text-center text-xs font-bold text-led-red">{callError}</p>
                 )}
               </>
             ) : (
-              <div className="space-y-3 text-sm leading-relaxed text-ink-soft">
-                <p className="font-medium text-ink">One step left to go live:</p>
-                <p>
-                  Create an ElevenLabs agent using the prompt and tools in{' '}
-                  <span className="font-mono text-[13px]">docs/agent-setup.md</span>, then set{' '}
-                  <span className="font-mono text-[13px]">NEXT_PUBLIC_ELEVENLABS_AGENT_ID</span>.
+              <div className="device-inset p-4 text-sm leading-relaxed text-ink-soft">
+                <p className="font-bold text-ink">One step left to go live:</p>
+                <p className="mt-1">
+                  Create the ElevenLabs agent from <span className="font-mono">docs/agent-setup.md</span>,
+                  then set <span className="font-mono">NEXT_PUBLIC_ELEVENLABS_AGENT_ID</span>.
                 </p>
               </div>
             )}
           </div>
 
-          <div
-            ref={transcriptRef}
-            className="max-h-72 space-y-4 overflow-y-auto border-t border-line px-5 py-4"
-          >
+          <div ref={transcriptRef} className="device-inset mt-3 max-h-64 overflow-y-auto px-4 py-3">
             {lines.length === 0 ? (
-              <p className="text-xs text-ink-faint">
-                The transcript writes itself here once a call starts.
+              <p className="font-mono text-xs text-ink-faint">
+                * transcript prints here once a call starts *
               </p>
             ) : (
-              lines.map((line) => (
-                <div key={line.id}>
-                  <span
-                    className={`text-[10px] font-semibold uppercase tracking-[0.18em] ${
-                      line.who === 'desk' ? 'text-vermilion' : 'text-ink-faint'
-                    }`}
-                  >
-                    {line.who === 'desk' ? 'Desk' : 'Caller'}
-                  </span>
-                  <p className="mt-0.5 text-sm leading-relaxed text-ink">{line.text}</p>
-                </div>
-              ))
+              <div className="space-y-2 font-mono text-[12.5px] leading-snug">
+                {lines.map((line) => (
+                  <p key={line.id} className="print-line">
+                    <span
+                      className={
+                        line.who === 'desk' ? 'font-bold text-stamp-red' : 'font-bold text-ink-faint'
+                      }
+                    >
+                      {line.who === 'desk' ? 'DESK>' : 'CALLR>'}
+                    </span>{' '}
+                    {line.text}
+                  </p>
+                ))}
+              </div>
             )}
           </div>
         </section>
 
         <div className="min-w-0 space-y-10">
-          <section>
-            <div className="mb-3 flex items-baseline justify-between">
-              <h2 className="font-display text-xl font-medium">This week at the clinic</h2>
-              <span className="text-xs text-ink-faint">
+          <section className="paper px-6 pt-5 pb-6">
+            <div className="flex items-baseline justify-between border-b-2 border-ink pb-2">
+              <h2 className="font-mono text-lg font-bold">WEEK PLANNER</h2>
+              <span className="font-mono text-xs text-ink-soft">
                 Mon–Sat · 9:00–17:00 · {appointments.length} booked
               </span>
             </div>
-            <div className="overflow-x-auto border border-line bg-cream">
-              <div className="grid min-w-[640px] grid-cols-7 divide-x divide-line">
+            <div className="mt-3 overflow-x-auto">
+              <div className="grid min-w-[640px] grid-cols-7 gap-x-3">
                 {days.map((day) => (
                   <div key={day.date} className="min-w-0">
-                    <div className="border-b border-line px-2 py-2 text-center">
-                      <div className="text-[10px] uppercase tracking-[0.16em] text-ink-faint">
-                        {day.weekday}
-                      </div>
-                      <div className="font-display text-sm">{day.monthDay}</div>
+                    <div className="border-b border-ink/60 pb-1 text-center font-mono">
+                      <span className="text-xs font-bold">{day.weekday}</span>{' '}
+                      <span className="text-xs text-ink-soft">{day.monthDay}</span>
                     </div>
-                    <div className="max-h-[380px] space-y-px overflow-y-auto p-1">
+                    <div className="max-h-[360px] overflow-y-auto pt-1">
                       {day.slots.length === 0 ? (
-                        <div className="px-1 py-3 text-center text-[10px] text-ink-faint">
-                          done for today
+                        <div className="pt-2 text-center font-mono text-[10px] text-ink-faint">
+                          — done —
                         </div>
                       ) : (
                         day.slots.map((slot) => {
@@ -352,16 +377,16 @@ function DeskInner() {
                             <div
                               key={slot.id}
                               title={appt ? `${appt.patientName} · ${appt.code}` : slot.label}
-                              className={`flex items-center justify-between gap-1 px-1.5 py-[3px] text-[11px] ${
-                                slot.booked
-                                  ? 'bg-moss-wash font-medium text-moss'
-                                  : 'text-ink-faint'
-                              }`}
+                              className="flex h-[27px] items-center justify-between gap-1 font-mono text-[11px]"
                             >
-                              <span className="font-mono">{slot.time}</span>
-                              {appt && (
-                                <span className="truncate">{appt.patientName.split(' ')[0]}</span>
-                              )}
+                              <span className={slot.booked ? 'text-ink' : 'text-ink-faint'}>
+                                {slot.time}
+                              </span>
+                              {appt ? (
+                                <span className="stamp text-[9.5px] text-stamp-blue">
+                                  {appt.patientName.split(' ')[0].toUpperCase()}
+                                </span>
+                              ) : null}
                             </div>
                           )
                         })
@@ -373,45 +398,50 @@ function DeskInner() {
             </div>
           </section>
 
-          <section>
-            <div className="mb-3 flex items-baseline justify-between">
-              <h2 className="font-display text-xl font-medium">Operations ledger</h2>
-              <span className="text-xs text-ink-faint">every tool call, as it happens</span>
+          <section className="mx-auto w-full max-w-md">
+            <div className="receipt px-5 pt-4 pb-8 font-mono text-[12px] leading-relaxed">
+              <div className="text-center">
+                <p className="text-sm font-bold">VOICEDESK OPERATIONS</p>
+                <p className="text-ink-soft">* every tool call, as it happens *</p>
+                <p className="text-ink-soft">================================</p>
+              </div>
+              {ledger.length === 0 ? (
+                <p className="py-4 text-center text-ink-faint">
+                  receipt is empty
+                  <br />
+                  start a call and ask for an appointment
+                </p>
+              ) : (
+                <div className="space-y-3 pt-2">
+                  {ledger.map((entry) => (
+                    <div key={entry.id} className="print-line">
+                      <p>
+                        <span className="text-ink-soft">{entry.at}</span>{' '}
+                        <span className="font-bold">{entry.tool}</span>{' '}
+                        <span
+                          className={
+                            entry.ok === false
+                              ? 'stamp text-[10px] text-stamp-red'
+                              : entry.ok === null
+                                ? 'text-ink-faint'
+                                : 'stamp text-[10px] text-stamp-blue'
+                          }
+                        >
+                          {entry.ok === false ? 'ERR' : entry.ok === null ? '...' : 'OK'}
+                        </span>
+                      </p>
+                      <p className="break-words text-ink-soft">{entry.args}</p>
+                      <p className="break-words">&gt; {entry.result}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-            {ledger.length === 0 ? (
-              <p className="border border-dashed border-line px-4 py-8 text-center text-sm text-ink-faint">
-                The ledger fills as the agent works. Start a call and ask for an appointment.
-              </p>
-            ) : (
-              <ol className="divide-y divide-line border border-line bg-cream font-mono text-[12.5px]">
-                {ledger.map((entry) => (
-                  <li key={entry.id} className="ledger-in grid gap-1 px-4 py-3 sm:grid-cols-[64px_170px_1fr]">
-                    <span className="text-ink-faint">{entry.at}</span>
-                    <span
-                      className={
-                        entry.ok === false
-                          ? 'text-vermilion'
-                          : entry.ok === null
-                            ? 'text-ink-faint'
-                            : 'text-moss'
-                      }
-                    >
-                      {entry.tool}
-                    </span>
-                    <span className="min-w-0 break-words text-ink-soft">
-                      <span className="text-ink-faint">{entry.args}</span>
-                      <span className="mx-2 text-ink-faint">→</span>
-                      {entry.result}
-                    </span>
-                  </li>
-                ))}
-              </ol>
-            )}
           </section>
         </div>
       </div>
 
-      <footer className="mt-20 flex flex-wrap items-baseline justify-between gap-3 border-t border-line pt-5 text-xs text-ink-faint">
+      <footer className="mt-16 flex flex-wrap items-baseline justify-between gap-3 border-t border-ink/20 pt-5 text-xs text-ink-faint">
         <span>
           Built by{' '}
           <a
