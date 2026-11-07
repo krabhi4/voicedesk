@@ -49,14 +49,17 @@ function DeskInner() {
   const [callError, setCallError] = useState<string | null>(null)
   const transcriptRef = useRef<HTMLDivElement>(null)
 
-  const refresh = useCallback(async () => {
-    const [availRes, apptRes] = await Promise.all([
-      fetch('/api/availability').then((r) => r.json()),
-      fetch('/api/appointments').then((r) => r.json()),
-    ])
-    setDays(availRes.days ?? [])
-    setAppointments(apptRes.appointments ?? [])
-  }, [])
+  const refresh = useCallback(
+    () =>
+      Promise.all([
+        fetch('/api/availability').then((r) => r.json()),
+        fetch('/api/appointments').then((r) => r.json()),
+      ]).then(([availRes, apptRes]) => {
+        setDays(availRes.days ?? [])
+        setAppointments(apptRes.appointments ?? [])
+      }),
+    [],
+  )
 
   useEffect(() => {
     refresh()
