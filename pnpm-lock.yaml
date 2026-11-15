@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@elevenlabs/react':
-        specifier: ^1.21.1
-        version: 1.21.1(@types/dom-mediacapture-record@1.0.22)(react@19.3.1)
+        specifier: ^1.22.0
+        version: 1.22.0(@types/dom-mediacapture-record@1.0.22)(react@19.3.1)
       '@prisma/adapter-pg':
         specifier: ^7.10.1
         version: 7.10.1
@@ -145,11 +145,11 @@ packages:
   '@electric-sql/pglite@0.4.3':
     resolution: {integrity: sha512-ichuWTgtd4mOM1G4SpyGJa5trT03lWbMypDV0fUXUCXg5hiHqVAz/bZyV68NqmkLB7WcYmj1RMJVSp8HV/v/ZQ==}
 
-  '@elevenlabs/client@1.35.0':
-    resolution: {integrity: sha512-lGz2XLj+0IsDp6FzL++LXxTTGx9gaQPcWMWIjKXqXhCCZnpUA47HF6Rl3dF/5g+KhMNcQUzAUlYxGFEYq2qI9g==}
+  '@elevenlabs/client@1.36.0':
+    resolution: {integrity: sha512-mLMPs5MFYAdxWdvBNfyusCSkKG5xqL+HNGTznNjETZmlXT3jgch3MyXN5aJMukfsDxmydcCSZ0crH0b0rH6qEQ==}
 
-  '@elevenlabs/react@1.21.1':
-    resolution: {integrity: sha512-FotjYwIT8zMPbHs6yn6nay7/bqD4d7YkdkXfvwRQxNBM+opHqfs/lMbznWtkcG/M44jcRjGsvmU0ajyCsr5nBw==}
+  '@elevenlabs/react@1.22.0':
+    resolution: {integrity: sha512-BHm9voYlirzB4l1T6UqUkeCiKi4Kc0Jb9vkVRMWTivr/0SbmcXWMMKf3nUx40wl2jmp5VlzZ9FDOY2UIWNIsUA==}
     peerDependencies:
       react: '>=16.8.0'
 
@@ -2767,16 +2767,16 @@ snapshots:
 
   '@electric-sql/pglite@0.4.3': {}
 
-  '@elevenlabs/client@1.35.0(@types/dom-mediacapture-record@1.0.22)':
+  '@elevenlabs/client@1.36.0(@types/dom-mediacapture-record@1.0.22)':
     dependencies:
       '@elevenlabs/types': 0.29.0
       livekit-client: 2.22.1(@types/dom-mediacapture-record@1.0.22)
     transitivePeerDependencies:
       - '@types/dom-mediacapture-record'
 
-  '@elevenlabs/react@1.21.1(@types/dom-mediacapture-record@1.0.22)(react@19.3.1)':
+  '@elevenlabs/react@1.22.0(@types/dom-mediacapture-record@1.0.22)(react@19.3.1)':
     dependencies:
-      '@elevenlabs/client': 1.35.0(@types/dom-mediacapture-record@1.0.22)
+      '@elevenlabs/client': 1.36.0(@types/dom-mediacapture-record@1.0.22)
       react: 19.3.1
     transitivePeerDependencies:
       - '@types/dom-mediacapture-record'
